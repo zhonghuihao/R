@@ -1,0 +1,44 @@
+# install.packages("reshape2")
+# install.packages("plyr")
+library(reshape2)
+library(plyr)
+
+setwd("C:/Users/2200499/Documents/R/output/")
+
+MLinks <- read.csv("MLinks.csv")
+MNodes <- read.csv("MNodes.csv")
+
+# >>--------------------------------------------------------------
+library(igraph)
+# --------------------------------------------------------------<<
+ML <- data.frame(MNodes[MLinks[,1],2],MNodes[MLinks[,2],2])
+colnames(ML) <- colnames(MLinks)[1:2]
+ML2 <- ML[(ML$source == "パンテーン")|(ML$target == "パンテーン"),]
+ML2 <- rbind(ML2,ML[(ML$source == "LUX")|(ML$target == "LUX"),])
+
+# graph data
+g <- graph.data.frame(ML,directed = TRUE)
+
+# (g.cl <- clusters(g))
+# no            number of links
+# csize         link size  
+# membership    link
+
+# plot.igraph
+plot.igraph(g,
+  vertex.size = 12,         #node size 
+  vertex.label.cex=0.5,    #node label size
+  edge.width = 1,          #edge weight
+  edge.arrow.size =  0.3,  #arrow size
+  layout = layout.auto)   #layout 
+
+# tkplot
+tkplot(g,canvas.width=1200, canvas.height=600)
+
+# >>--------------------------------------------------------------
+library(networkD3)
+# --------------------------------------------------------------<<
+
+
+# write.table(ML,file="C:/Users/2200499/Documents/R/output/MLinks.csv",sep=",",row.names=FALSE,col.names=TRUE)
+
