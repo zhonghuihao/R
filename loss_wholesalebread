@@ -1,0 +1,33 @@
+# install.packages("RODBC")
+library(RODBC)
+library(reshape2)
+
+#RawData
+db_cnt <-  odbcDriverConnect("driver=SQL Server;server=172.20.7.108;
+                              UID=sa;PWD=123456a+1;database=lossdown")
+
+# 売数予測
+salesDaily <-  sqlQuery(db_cnt,"select * from SaleLossDay")
+salesDaily$JAN <- as.character(salesDaily$JAN)
+salesDaily$日付 <-  as.Date(salesDaily$日付)
+salesDaily$weekday <- weekdays(as.Date(salesDaily$日付))
+minDay <- max(salesDaily$日付) - 
+          as.integer(difftime(max(salesDaily$日付),min(salesDaily$日付),units=("weeks")))*7+1
+salesDaily <- salesDaily[salesDaily$日付 >= minDay,]
+salesDaily <- salesDaily[,c(1,2,3,6,9,12,13,18)]
+
+salesDaily_new <- aggregate(salesDaily$売上数量, 
+                            by=list(storeCD=salesDaily$店CD,JAN=salesDaily$JAN,
+                                    商品名=salesDaily$商品名,weekday=salesDaily$weekday),
+                            sum)
+
+salesDaily_new2 <- aggregate(salesDaily$売上数量, 
+                            by=list(storeCD=salesDaily$店CD,JAN=salesDaily$JAN,
+                                    商品名=salesDaily$商品名),
+                            sum)
+
+rateWeekday <- merge(salesDaily_new,salesDaily_new2,by=c('storeCD','JAN','商品名'))
+rateWeekday$per <- rateWeekday$x.x / rateWeekday$x.y
+
+mt <- melt(rateWeekday[,c(1:4,7)],id=c(1:3))
+dc <- dcast(mt,storeCD+JAN+商品名~weekday)
