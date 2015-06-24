@@ -1,0 +1,53 @@
+# 
+# 
+# 
+# 
+# 
+# install.packages("tm")
+
+library(tm)
+
+# Lording a Corpus
+(cname <- file.path("C:/Users/2200499/Documents/R","data","TOP"))
+(docs <- Corpus(DirSource(cname),readerControl = list(reader = readPDF)))
+
+class(docs)
+class(docs[1])
+summary(docs)
+
+# Exploring the Corpus
+inspect(docs[1])
+
+# Preparing the Corpus
+getTransformations()
+
+# simple transforms
+toSpace <- content_transformer(function(x,pattern) gsub(pattern," ",x))
+docs <- tm_map(docs,toSpace,"<br>|<br/>|/|@/\\|")
+# docs <- tm_map(docs,toSpace,"/")
+# docs <- tm_map(docs,toSpace,"@")
+# docs <- tm_map(docs,toSpace,"\\|")
+# docs <- tm_map(docs,toSpace,"<br>")
+
+# conversion to lower case 
+docs <- tm_map(docs,content_transformer(tolower))
+
+# remove numbers
+docs <- tm_map(docs,removeNumbers)
+
+# remove punctuation
+docs <- tm_mp(docs,removePunctuation)
+
+# remove Engilsh stop words
+docs <- tm_map(docs,removeWords,stopwords("english"))
+
+
+
+
+
+contents <- read.csv("C:/Users/2200499/Documents/R/data/TOP2015.csv",header =  TRUE,sep = ",")
+
+
+DirSource(system.file("texts", "txt", package = "tm"))
+
+
