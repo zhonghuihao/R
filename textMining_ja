@@ -3,8 +3,10 @@ library(RMeCab)
 library(plyr)
 
 ## read the file 
-top <- read.csv("C:/Users/2200499/Documents/R/data/TOP/TOP2015.csv")
-res <- RMeCabDF(top[top$report_week == 26,] , 4, 1)
+# top <- read.csv("C:/Users/2200499/Documents/R/data/TOP/TOP2015.csv")
+top <- read.csv("/home/eloo/Downloads/TOP/TOP2015.csv",
+                header=T, encoding = "UTF-8")
+res <- RMeCabDF(top[top$report_week==25,] , 4, 1)
 res_f <- unlist(res)[names(unlist(res)) ==  "名詞"]
 res_df <- data.frame(res_f)
 # res_df[,2] <- 1
@@ -61,6 +63,7 @@ freq <-  sort(colSums(as.matrix(dtm)),decreasing = TRUE)
 wf <- data.frame(word=names(freq),freq=freq)
 class(wf) 
 
+library(magrittr)
 library(ggplot2)
 subset(wf,freq>1)                                      %>%
   ggplot(aes(word,freq))                              +
@@ -68,6 +71,7 @@ subset(wf,freq>1)                                      %>%
   theme(axis.text.x=element_text(angle=45,hjust=1))   
 
 # word clouds
+library(RColorBrewer)
 library(wordcloud)
 set.seed(123)
 wordcloud(names(freq),freq,min.freq = 100)
@@ -77,12 +81,12 @@ set.seed(142)
 wordcloud(names(freq),freq, max.words=100)
 
 # adding some colour
-wordcloud(names(freq),freq,min.freq = 60,colors=brewer.pal(6,"Spectral"))
+wordcloud(names(freq),freq,min.freq = 1,colors=brewer.pal(9,"BrBG"))
 # display.brewer.all()
 # brewer.pal.info 
 
 # varying the scaling
-wordcloud(names(freq),freq,min.freq = 5,scale=c(5,.3),colors=brewer.pal(6,"Accent"))
+wordcloud(names(freq),freq,min.freq = 1,scale=c(4,.3),colors=brewer.pal(7,"BrBG"))
 
 # quantitative analysis of text
 words <- dtm                            %>%
@@ -99,8 +103,3 @@ summary(nchar(words))
 library(qdap)
 table(nchar(words))
 dist_tab(nchar(words))
-
-
-
-
-
