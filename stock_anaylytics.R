@@ -8,6 +8,7 @@ szzs <- getSymbols("SZZS",from = "2013-01-01",to = Sys.Date())
 setSymbolLookup(SWTX = list(name="002405.SZ", src="yahoo"))
 swtx <- getSymbols("SWTX",from = "2013-01-01",to = Sys.Date())
 
+
 ## 月指数和周指数
 SZZS.m <- to.monthly(SZZS)
 SZZS.w <- to.weekly(SZZS)
@@ -28,15 +29,9 @@ addMACD(fast = 10, slow = 20, signal = 5,col = c("red", "green", "yellow", "red"
 
 ## add Bollinger bands
 addBBands()
-ser$colors$BBands.col <- "white"
-ser$colors$BBands.fille <-  "gray"
-
-
-
-
-
-
-
+ser@colors$BBands.col <- "white"
+ser@colors$BBands.fille <-  "gray"
+reChart()
 
 
 
