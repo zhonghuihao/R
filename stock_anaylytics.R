@@ -1,39 +1,35 @@
 library(quantmod)
-sse<-getSymbols("^SSEC",from = "2015-01-01",to = Sys.Date(),src = "yahoo")
-tail(SSEC)
-# candleChart(SSEC,theme = "white")
-barChart(SSEC)
-## Add multi-coloring and change background to white 
-candleChart(SSEC,multi.col=TRUE,theme="white") 
 
-SSEC.m <- to.monthly(SSEC)
-tail(SSEC.m)
-candleChart(SSEC.m,theme = "white")
+## 上证指数
+setSymbolLookup(SZZS = list(name="000001.SS", src="yahoo"))
+szzs <- getSymbols("SZZS",from = "2013-01-01",to = Sys.Date())
 
-SSEC.w <- to.weekly(SSEC)
-tail(SSEC.w)
-candleChart(SSEC.w,theme = "white")
+## 四维图新
+setSymbolLookup(SWTX = list(name="002405.SZ", src="yahoo"))
+swtx <- getSymbols("SWTX",from = "2013-01-01",to = Sys.Date())
 
-# Technical analysis charting tools
+## 月指数和周指数
+SZZS.m <- to.monthly(SZZS)
+SZZS.w <- to.weekly(SZZS)
+SWTX.m <- to.monthly(SWTX)
+SWTX.w <- to.weekly(SWTX)
+
 require(TTR) 
-getSymbols("AAPL",from = "2015-01-01",to = Sys.Date(),src = "yahoo")
-chartSeries(AAPL) 
-addMACD() 
-addBBands() 
+ser <- chartSeries(SZZS.w,theme = chartTheme("black",up.col="red",dn.col="green")) 
 
-> # Create a quantmod object for use in 
-> # in later model fitting. Note there is 
-> # no need to load the data before hand. 
-setSymbolLookup(SPY='yahoo',VXN=list(name='^VIX',src='yahoo')) 
-mm <- specifyModel(Next(OpCl(SPY)) ~ OpCl(SPY) + Cl(VIX)) 
-modelData(mm)
+## add moving averges to a chart 
+addSMA(5,on=1 ,with.col = Cl , overlay = T, col = "yellow")
+addSMA(10,on=1 ,with.col = Cl , overlay = T, col = "green")
+addSMA(30,on=1 ,with.col = Cl , overlay = T, col = "red")
 
-data <- na.omit(
-    merge(
-      
-      ))
+## add MACD line
+## red&green:MACD,yellow:DIFF,red:DAE 
+addMACD(fast = 10, slow = 20, signal = 5,col = c("red", "green", "yellow", "red"))
 
-
+## add Bollinger bands
+addBBands()
+ser$colors$BBands.col <- "white"
+ser$colors$BBands.fille <-  "gray"
 
 
 
