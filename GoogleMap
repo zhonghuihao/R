@@ -1,0 +1,13 @@
+
+library(googleVis)
+Motion <- gvisMotionChart(Fruits, idvar="Fruit", 
+                          timevar="Year", options=list(height=350, width=400))
+
+# Dong Tu
+plot(Motion)
+cat(createGoogleGadget(Motion), file="motionchart.xml")
+
+# Dili Tu
+Geo=gvisGeoMap(Exports, locationvar="Country", numvar="Profit",
+               options=list(height=600,width=800 ,dataMode='regions'))
+plot(Geo)
