@@ -1,0 +1,70 @@
+# 安装R的google地图包
+# install.packages("googleVis")
+# install.packages("ggmap")
+library(googleVis);
+library(ggmap);
+
+setwd("C:/Users/2200499/Documents/R/script/GoogleMap2")
+
+setInternet2() 
+#获取起点、终点及其中间站点的坐标,起点设为天安门,终点设为颐和园
+from = 'jinshuilu 801 ,qingdao'
+to = 'linyi'
+#获取起点坐标
+route.from = geocode(from)
+#获取终点坐标
+route.to = geocode(to)
+#获取乘车路线站点数据（默认）
+RouteDriving= route(from, to, mode = 'driving', structure = 'route');
+#获取步行路线站点数据
+# RouteWalking= route(from, to, mode = 'walking', structure = 'route');
+#提取乘车路线站点坐标 
+RouteDriving2= data.frame(RouteDriving$lon, RouteDriving$lat); 
+#提取步行路线站点坐标
+# RouteWalking2= data.frame(RouteWalking$lon, RouteWalking$lat);
+
+#绘制标注从李村到临沂的路线图
+# pdf("routemap.pdf",family="GB1")
+#绘制乘车路线图
+MapDriving= get_googlemap( 'rizhao', zoom = 8, maptype='roadmap',
+                           markers = RouteDriving2, path = RouteDriving2, scale = 4);
+
+ggmap(MapDriving, extent = 'panel') + 
+  annotate("text",x=route.from[1,1],y=route.from[1,2],label="青岛李村",col="red",fontface=2) +
+  annotate("text",x=route.to[1,1],y=route.to[1,2],label="临沂",col="red",fontface=2) +
+  labs(x="Longitude", y="Latitude", title='青岛到临沂的乘车路线图');
+
+#绘制步行路线图
+# MapWalking= get_googlemap( 'qingdaodaxue', zoom = 12, maptype='roadmap',
+#                            markers = RouteWalking2, path = RouteWalking2, scale = 2);
+# ggmap(MapWalking, extent = 'panel') + 
+#   annotate("text",x=route.from[1,1],y=route.from[1,2],label="天安门",col="red",fontface=2) +
+#   annotate("text",x=route.to[1,1],y=route.to[1,2],label="颐和园",col="red",fontface=2) +
+#   labs(x="Longitude", y="Latitude", title='天安门到颐和园步行路线图'); 
+
+# dev.off() 
+
+# ------------------------------------------------------------------------
+library(googleVis);
+library(ggmap);
+
+p = data.frame(lon <- c(118.5, 118.4, 118.4), 
+               lat <- c(35, 35.1, 35.2),
+               s   <- c('a', 'd', 'f'),
+               cs  <- c('red', 'blue', 'green'))
+
+linyi <- get_googlemap('linyi', zoom = 11,maptype = "roadmap") 
+ggmap(linyi, extent = 'panel') +
+      geom_point(data=p, mapping=aes(x=lon,y=lat,colour=cs,shape=s),size=6,fill='red')
+
+# intro-spatial-rl.pdfを参考
+
+
+
+
+
+
+
+
+
+
